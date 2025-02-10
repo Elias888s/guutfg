@@ -76,6 +76,7 @@ no boot a-image stable
 Включение - en
 Вход в конфигурационный режим - conf t
 Просмотр портов - do sh port br
+просмотр истории команд - do sh run
 ```
 Создание интерфейса и назначение ему IP
 ```
@@ -132,7 +133,12 @@ do wr
 ```
 interface tunnel.1
  ip mtu 1400
- ip address 172.16.1.1/30
+ ip address 172.16.0.1/30
+ ip tunnel 172.16.4.2 172.16.5.2 mode gre
+```
+interface tunnel.1
+ ip mtu 1400
+ ip address 172.16.0.2/30
  ip tunnel 172.16.4.2 172.16.5.2 mode gre
 ```
 Маршрут в сторону ISP
@@ -278,12 +284,29 @@ apt-get install iptables
 ```
 #### ISP
 ```
-iptables -t nat -A POSTROUTING -s 172.16.4.0/28 -o ens** -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 172.16.5.0/28 -o ens** -j MASQUERADE
-iptables-save > /etc/sysconfig/iptables
-systemctl restart iptables
-vim /etc/crontab
-@reboot root service iptables start
+systemctl disable NetworkManager
+Настройки интерфейсов должны быть такими:
+
+...
+NM_CONTROLLED=no
+DISABLED=no
+...
+Установка firewalld:
+
+apt-get update && apt-get -y install firewalld && systemctl enable --now firewalld
+Правила к исходящим пакетам (в сторону провайдера):
+
+firewall-cmd --permanent --zone=public --add-interface=ens18
+Правила к входящим пакетам (к локальной сети):
+
+firewall-cmd --permanent --zone=trusted --add-interface=ens19
+firewall-cmd --permanent --zone=trusted --add-interface=ens20
+Включение NAT:
+
+firewall-cmd --permanent --zone=public --add-masquerade
+Сохранение правил:
+
+firewall-cmd --complete-reload
 ```
 #### Настройка на роутерах
 HQ-RTR
