@@ -290,22 +290,26 @@ systemctl disable NetworkManager
 ...
 NM_CONTROLLED=no
 DISABLED=no
-...
+```
 Установка firewalld:
-
+```
 apt-get update && apt-get -y install firewalld && systemctl enable --now firewalld
+```
 Правила к исходящим пакетам (в сторону провайдера):
-
+```
 firewall-cmd --permanent --zone=public --add-interface=ens18
+```
 Правила к входящим пакетам (к локальной сети):
-
+```
 firewall-cmd --permanent --zone=trusted --add-interface=ens19
 firewall-cmd --permanent --zone=trusted --add-interface=ens20
+```
 Включение NAT:
-
+```
 firewall-cmd --permanent --zone=public --add-masquerade
+```
 Сохранение правил:
-
+```
 firewall-cmd --complete-reload
 ```
 #### Настройка на роутерах
