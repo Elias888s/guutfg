@@ -63,7 +63,7 @@ systemctl restart network
 <img src="1.jpg" width="500">
 ### 2 Настройка NAT
 Обновление и установка firewalld
-```
+
 ```
 #### ISP
 ```
@@ -96,7 +96,6 @@ firewall-cmd --permanent --zone=public --add-masquerade
 firewall-cmd --complete-reload
 ```
 включим forward
-```
 ```
 vim /etc/net/sysctl.conf
 net.ipv4.ip_forward = 1
