@@ -62,10 +62,8 @@ systemctl restart network
 Проверка:
 <img src="1.jpg" width="500">
 ### 2 Настройка NAT
-Обновление и установка iptables
+Обновление и установка firewalld
 ```
-apt-get update
-apt-get install iptables
 ```
 #### ISP
 ```
