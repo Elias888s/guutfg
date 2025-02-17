@@ -95,6 +95,12 @@ firewall-cmd --permanent --zone=public --add-masquerade
 ```
 firewall-cmd --complete-reload
 ```
+включим forward
+```
+```
+vim /etc/net/sysctl.conf
+net.ipv4.ip_forward = 1
+```
 #### HQ-RTR
 Выбор заводской прошивки на роутере, чтоб работали порты
 ```
