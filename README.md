@@ -80,12 +80,12 @@ apt-get update && apt-get -y install firewalld && systemctl enable --now firewal
 ```
 Правила к исходящим пакетам (в сторону провайдера):
 ```
-firewall-cmd --permanent --zone=public --add-interface=ens18
+firewall-cmd --permanent --zone=public --add-interface=ens33
 ```
 Правила к входящим пакетам (к локальной сети):
 ```
-firewall-cmd --permanent --zone=trusted --add-interface=ens19
-firewall-cmd --permanent --zone=trusted --add-interface=ens20
+firewall-cmd --permanent --zone=trusted --add-interface=ens34
+firewall-cmd --permanent --zone=trusted --add-interface=ens35
 ```
 Включение NAT:
 ```
