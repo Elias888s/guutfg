@@ -119,7 +119,7 @@ no boot a-image stable
 Создание интерфейса и назначение ему IP
 ```
 int TO-ISP
-ip address 172.16.4.2/28
+ip address 172.16.4.14/28
 no shutdown
 ex
 ip name-server "DNS от ISP который в /etc/resolv.conf"
@@ -136,48 +136,64 @@ connect ip interface TO-ISP
 ```
 Создание интерфейсов для VLAN
 ```
-interface HQ-SRV
- ip mtu 1500
- ip address 192.168.0.1/26
+interface 100
+ ip address 192.168.1.1/26
 !
-interface HQ-CLI
- ip mtu 1500
- ip address 192.168.0.65/28
+interface 200
+ ip address 192.168.1.65/28
 !
-interface HQ-MGMT
- ip mtu 1500
- ip address 192.168.0.81/29
+interface 999
+ ip address 192.168.1.81/29
 !
 ```
 Создание для каждого VLAN своего service-instance
 ```
 port te0
- mtu 9234
- service-instance te0/vlan100
+ service-instance isp
+  encapsulation untagged
+  connect ip interface isp
+ex
+ex
+port te1
+ service-instance 100
   encapsulation dot1q 100
   rewrite pop 1
-  connect ip interface HQ-SRV
- service-instance te0/vlan200
+  connect ip interface 100
+ service-instance 200
   encapsulation dot1q 200
   rewrite pop 1
-  connect ip interface HQ-CLI
- service-instance te0/vlan999
+  connect ip interface 200
+service-instance 999
   encapsulation dot1q 999
   rewrite pop 1
-  connect ip interface HQ-MGMT
+  connect ip interface 999
+ip route 0.0.0.0/0 172.16.4.1
+ip name-server
 do wr
+```
+Создание nat
+```
+ip nat pool INTERNET 192.168.1.1-192.168.1.78
+ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.4.14
+int isp
+ip nat outside
+ex
+int 100
+ip nat instide
+ex
+int 200
+ip nat instide
+ex
+int 999
+ip nat instide
+ex
 ```
 Создание GRE тоннеля
 ```
 interface tunnel.1
  ip mtu 1400
  ip address 172.16.0.1/30
- ip tunnel 172.16.4.2 172.16.5.2 mode gre
-```
-interface tunnel.1
- ip mtu 1400
- ip address 172.16.0.2/30
- ip tunnel 172.16.4.2 172.16.5.2 mode gre
+ ip tunnel 172.16.4.14 172.16.5.14 mode gre
 ```
 Маршрут в сторону ISP
 ```
@@ -243,32 +259,47 @@ no boot a-image stable
 ```
 Создание интерфейса и назначение ему IP
 ```
-int TO-ISP
-ip address 172.16.5.2/28
+int isp
+ip address 172.16.5.14/28
 no shutdown
-int TO-BR
-ip address 192.168.1.1/27
+int lan
+ip address 192.168.2.1/27
 no shutdown
 ```
 Привязка созданных интерфейсов к портам
 ```
-port ge0
-service-instance ge0
-encapsulation default
-service-instance SI-ISP
-encapsulation untagged
-connect ip interface TO-ISP
 port te0
-service-instance SI-BR
+service-instance isp
 encapsulation untagged
-connect ip interface TO-BR
+connect ip interface isp
+ex
+port te1
+service-instance lan
+encapsulation untagged
+connect ip interface lan
+ex
+ex
+ip route 0.0.0.0/0 172.16.5.1
+ip nameserver
+
+```
+Создание nat
+```
+ip nat pool INTERNET 192.168.2.1-192.168.2.30
+ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.5.14
+int isp
+ip nat outside
+ex
+int lan
+ip nat instide
+ex
 ```
 Создание GRE тоннеля
 ```
 interface tunnel.1
  ip mtu 1400
- ip address 172.16.1.2/30
- ip tunnel 172.16.5.2 172.16.4.2 mode gre
+ ip address 172.16.0.2/30
+ ip tunnel 172.16.5.14 172.16.4.14 mode gre
 ```
 Маршрут в сторону ISP
 ```
