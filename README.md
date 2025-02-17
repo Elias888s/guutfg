@@ -345,39 +345,6 @@ vim /etc/net/sysctl.conf
 ```
 systemctl restart network
 ```
-#### Настройка на роутерах
-HQ-RTR
-```
-int TO-ISP
- ip nat outside
-!
-int HQ-SRV
- ip nat inside
-!
-int HQ-CLI
- ip nat inside
-!
-int HQ-MGMT
- ip nat inside
-!
-ip nat pool NAT_POOL 192.168.0.1-192.168.0.254
-!
-ip nat source dynamic inside-to-outside pool NAT_POOL overload interface TO-ISP
-do wr
-```
-BR-RTR
-```
-int TO-ISP
- ip nat outside
-!
-int TO-BR
- ip nat inside
-!
-ip nat pool LOCAL_NET 192.168.1.1-192.168.1.30
-!
-ip nat source dynamic inside-to-outside pool LOCAL_NET overload interface TO-ISP
-do wr
-```
 Проверка, должен пинговаться DNS от ISP:
 ```
 do ping 'DNS от ISP'
