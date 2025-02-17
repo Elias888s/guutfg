@@ -61,7 +61,42 @@ systemctl restart network
 ```
 Проверка:
 <img src="1.jpg" width="500">
+### 2 Настройка NAT
+Обновление и установка iptables
+```
+apt-get update
+apt-get install iptables
+```
+#### ISP
+```
+systemctl disable NetworkManager
+Настройки интерфейсов должны быть такими:
 
+...
+NM_CONTROLLED=no
+DISABLED=no
+```
+Установка firewalld:
+```
+apt-get update && apt-get -y install firewalld && systemctl enable --now firewalld
+```
+Правила к исходящим пакетам (в сторону провайдера):
+```
+firewall-cmd --permanent --zone=public --add-interface=ens18
+```
+Правила к входящим пакетам (к локальной сети):
+```
+firewall-cmd --permanent --zone=trusted --add-interface=ens19
+firewall-cmd --permanent --zone=trusted --add-interface=ens20
+```
+Включение NAT:
+```
+firewall-cmd --permanent --zone=public --add-masquerade
+```
+Сохранение правил:
+```
+firewall-cmd --complete-reload
+```
 #### HQ-RTR
 Выбор заводской прошивки на роутере, чтоб работали порты
 ```
@@ -275,42 +310,6 @@ vim /etc/net/sysctl.conf
 Перезагрузка службы network
 ```
 systemctl restart network
-```
-### 2 Настройка NAT
-Обновление и установка iptables
-```
-apt-get update
-apt-get install iptables
-```
-#### ISP
-```
-systemctl disable NetworkManager
-Настройки интерфейсов должны быть такими:
-
-...
-NM_CONTROLLED=no
-DISABLED=no
-```
-Установка firewalld:
-```
-apt-get update && apt-get -y install firewalld && systemctl enable --now firewalld
-```
-Правила к исходящим пакетам (в сторону провайдера):
-```
-firewall-cmd --permanent --zone=public --add-interface=ens18
-```
-Правила к входящим пакетам (к локальной сети):
-```
-firewall-cmd --permanent --zone=trusted --add-interface=ens19
-firewall-cmd --permanent --zone=trusted --add-interface=ens20
-```
-Включение NAT:
-```
-firewall-cmd --permanent --zone=public --add-masquerade
-```
-Сохранение правил:
-```
-firewall-cmd --complete-reload
 ```
 #### Настройка на роутерах
 HQ-RTR
