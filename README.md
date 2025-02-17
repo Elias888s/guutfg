@@ -63,13 +63,13 @@ systemctl restart network
 <img src="1.jpg" width="500">
 ### 2 Настройка NAT
 Обновление и установка firewalld
-
 ```
+
 #### ISP
 ```
 systemctl disable NetworkManager
+```
 Настройки интерфейсов должны быть такими:
-
 ...
 NM_CONTROLLED=no
 DISABLED=no
@@ -108,8 +108,10 @@ no boot b-image active
 no boot b-image stable
 no boot a-image active
 no boot a-image stable
+```
 перезагружаем машину
 ```
+
 ```
 Включение - en
 Вход в конфигурационный режим - conf t
