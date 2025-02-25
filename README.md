@@ -124,16 +124,6 @@ no shutdown
 ex
 ip name-server "DNS от ISP который в /etc/resolv.conf"
 ```
-Привязка созданного интерфейса к порту
-```
-port ge0
-service-instance ge0
-encapsulation default
-ex
-service-instance SI-ISP
-encapsulation untagged
-connect ip interface TO-ISP
-```
 Создание интерфейсов для VLAN
 ```
 interface 100
