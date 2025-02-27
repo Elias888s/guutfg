@@ -185,6 +185,20 @@ interface tunnel.1
  ip address 172.16.0.1/30
  ip tunnel 172.16.4.14 172.16.5.14 mode gre
 ```
+ospf
+HQ-RTR
+```
+en
+conf t
+router ospf 1
+network 172.16.0.1/30 area 0
+network 192.168.1.0/26 area 0
+network 192.168.2.0/28 area 0
+passive-interface default
+no passive-interface tunnel0
+area 0 authentication
+exit
+write memory
 Маршрут в сторону ISP
 ```
 ip route 0.0.0.0/0 172.16.4.1
@@ -290,6 +304,19 @@ interface tunnel.1
  ip mtu 1400
  ip address 172.16.0.2/30
  ip tunnel 172.16.5.14 172.16.4.14 mode gre
+ ```
+ BR-RTR
+```
+en
+conf t
+router ospf 1
+network 172.16.0.2/30 area 0
+network 192.168.3.0/27 area 0
+passive-interface default
+no passive-interface tunnel0
+area 0 authentication
+exit
+write memory
 ```
 Маршрут в сторону ISP
 ```
