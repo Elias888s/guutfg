@@ -193,7 +193,6 @@ conf t
 router ospf 1
 network 172.16.0.1/30 area 0
 network 192.168.1.0/26 area 0
-network 192.168.2.0/28 area 0
 passive-interface default
 no passive-interface tunnel0
 area 0 authentication
@@ -305,15 +304,15 @@ interface tunnel.1
  ip address 172.16.0.2/30
  ip tunnel 172.16.5.14 172.16.4.14 mode gre
  ```
- BR-RTR
+ BR-RTR OSPF
 ```
 en
 conf t
 router ospf 1
 network 172.16.0.2/30 area 0
-network 192.168.3.0/27 area 0
+network 192.168.2.0/27 area 0
 passive-interface default
-no passive-interface tunnel0
+no passive-interface tunnel.0
 area 0 authentication
 exit
 write memory
