@@ -430,7 +430,7 @@ interface tunnel.1
  ip ospf network point-to-point
 do wr
 ```
-#### BR-RTR
+#### OSPF
 ```
 router ospf 1
  network 172.16.1.0/30 area 0
