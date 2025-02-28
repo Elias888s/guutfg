@@ -465,7 +465,7 @@ interface HQ-CLI
  dhcp-server 1
 !
 do wr
-```
+
 #### HQ-CLI
 <img src="5.png" width="500">
 <img src="6.png" width="500">
@@ -473,168 +473,38 @@ do wr
 <img src="8.png" width="500">
 Если сработало то в ip -c a будет так
 <img src="9.png" width="500">
-### 7 Настройка DNS с помощью bind
-#### HQ-SRV
-Устанавливаем bind:
-
 ```
-apt-get install bind bind-utils
+### 7 настройка днс
+#### HQ-RTR
 ```
-
-Редактируем конфиг:
-
 ```
-vim /var/lib/bind/etc/options.conf
+Для начала необходимо отключить несовместимую службу bind если она есть, командой
 ```
-
-Изменяем следующие параметры
-<img src="10.png" width='500'>
-<img src="11.png" width='500'>
-
-Проверяем на ошибки
-
+systemctl disable --now bind
 ```
-named-checkconf
+Для работы DNS есть служба dnsmasq (она же и для DHCP)
+Установим её на наш сервер HQ-SRV (если есть, как у нас, то переходите к следующему шагу).
+Ещё нам нужно добавить в resolv.conf сервер Google, иначе мы не сможем обновить репозитории, поэтому идём его редактировать следующей командой:
 ```
-
-Если ошибок нет, то запускаем `bind`
-
+mcedit /etc/resolv.conf
 ```
-systemctl enable --now bind
+И добавляем следующую строку в него:
 ```
-Проверяем что `bind` работает
-
+nameserver 8.8.8.8
 ```
-systemctl status bind
+Обновим пакеты и установим её командами:
 ```
-
-Редактируем `resolv.conf`
-
+apt-get update
 ```
-vim /etc/resolv.conf 
-search au-team.irpo
-nameserver 127.0.0.1
-nameserver 192.168.0.2
-nameserver 'DNS от ISP'
+apt-get install dnsmasq (Установка пакета dnsmasq)
 ```
-
-Перезагружаем сеть
-
-```
-systemctl restart network
-```
-Создаем зону прямого просмотра
-```
-vim  /var/lib/bind/etc/local.conf
-```
-
-```
-zone "au-team.irpo" {
-        type master;
-        file "au-team.irpo.db";
-};
-```
-Создаем копию файла-шаблона прямой зоны `/var/lib/bind/etc/zone/localdomain`
-
-```
-cp /var/lib/bind/etc/zone/localdomain  /var/lib/bind/etc/zone/au-team.irpo.db
-```
-
-Задаем права на файл
-```
-chown named. /var/lib/bind/etc/zone/au-team.irpo.db
-
-chmod 600 /var/lib/bind/etc/zone/au-team.irpo.db
-```
-
-Открываем для редактирования
-
-```
-vim /var/lib/bind/etc/zone/au-team.irpo.db
-```
-
-```
-$TTL    1D
-@       IN      SOA     au-team.irpo. root.au-team.irpo. (
-                                2024102200      ; serial
-                                12H             ; refresh
-                                1H              ; retry
-                                1W              ; expire
-                                1H              ; ncache
-                        )
-        IN      NS      au-team.irpo.
-        IN      A       192.168.0.2
-hq-rtr  IN      A       192.168.0.1
-br-rtr  IN      A       192.168.1.1
-hq-srv  IN      A       192.168.0.2
-hq-cli  IN      A       192.168.0.66
-br-srv  IN      A       192.168.1.2
-moodle  IN      CNAME   hq-rtr
-wiki    IN      CNAME   hq-rtr
-```
-
-Проверяем, что зона настроена Предварительно
-
-```
-named-checkconf -z
-```
-Создаем зону обратного просмотра и PTR записи
-```
-vim  /var/lib/bind/etc/local.conf
-```
-
-```
-zone "0.168.192.in-addr.arpa" {
-        type master;
-        file "au-team.irpo_rev.db";
-};
-```
-Копируем шаблон файла
-
-```
-cp /var/lib/bind/etc/zone/{127.in-addr.arpa,au-team.irpo_rev.db}
-```
-
-Задаем права на файл
-```
-chown named. /var/lib/bind/etc/zone/au-team.irpo_rev.db
-
-chmod 600 /var/lib/bind/etc/zone/au-team.irpo_rev.db
-```
-
-Открываем для редактирования
-
-```
-vim /var/lib/bind/etc/zone/au-team.irpo_rev.db
-```
-
-Вставляем в него следующее содержимое.
-
-```
-$TTL    1D
-@       IN      SOA     au-team.irpo. root.au-team.irpo. (
-                                2024102200      ; serial
-                                12H             ; refresh
-                                1H              ; retry
-                                1W              ; expire
-                                1H              ; ncache
-                        )
-        IN      NS      au-team.irpo.
-1       IN      PTR     hq-rtr.au-team.irpo.
-2       IN      PTR     hq-srv.au-team.irpo.
-66      IN      PTR     hq-cli.au-team.irpo.
-```
-
-Проверяем
-
-```
-named-checkconf -z
+systemctl enable --now dnsmasq (Добавление службы в автозапуск)
 ```
 ### 8 Настройка часового пояса
 #### HQ-SRV, HQ-CLI, BR-SRV
-
+```
+```
 Проверяем какой часовой пояс установлен
-
 ```
 timedatectl status
 ```
