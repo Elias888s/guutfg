@@ -500,10 +500,13 @@ apt-get install dnsmasq (Установка пакета dnsmasq)
 ```
 systemctl enable --now dnsmasq (Добавление службы в автозапуск)
 ```
+```
+<img src="unnamed.png" width="500">
+```
 ### 8 Настройка часового пояса
 #### HQ-SRV, HQ-CLI, BR-SRV
 ```
-```
+
 Проверяем какой часовой пояс установлен
 ```
 timedatectl status
