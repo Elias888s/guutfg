@@ -465,7 +465,7 @@ interface HQ-CLI
  dhcp-server 1
 !
 do wr
-
+```
 #### HQ-CLI
 <img src="5.png" width="500">
 <img src="6.png" width="500">
@@ -477,7 +477,7 @@ do wr
 ### 7 настройка днс
 #### HQ-SRV
 ```
-```
+
 Для начала необходимо отключить несовместимую службу bind если она есть, командой
 ```
 systemctl disable --now bind
@@ -499,11 +499,9 @@ apt-get update
 apt-get install dnsmasq (Установка пакета dnsmasq)
 ```
 systemctl enable --now dnsmasq (Добавление службы в автозапуск)
-```
-```
-<img src="unnamed.png" width="500">
 
 ```
+<img src="unnamed.png" width="500">
 ```
 ### 8 Настройка часового пояса
 #### HQ-SRV, HQ-CLI, BR-SRV
