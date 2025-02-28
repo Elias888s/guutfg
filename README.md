@@ -503,6 +503,85 @@ systemctl enable --now dnsmasq (Добавление службы в автоз�
 ```
 <img src="unnamed.png" width="500">
 ```
+Проверим её состояние перед работой:
+
+```
+systemctl status dnsmasq
+```
+<img src="unnamed (1).png" width="500">
+```
+
+Затем откроем файл для редактирования конфигурации нашего DNS-сервера:
+```
+mcedit /etc/dnsmasq.conf
+```
+И добавляем в неё строки (для удобства прям с первой строки файла):
+```
+no-resolv (не будет использовать /etc/resolv.conf)
+
+domain=au-team.irpo
+
+server=8.8.8.8 (адрес общедоступного DNS-сервера)
+
+interface=* (на каком интерфейсе будет работать служба)
+
+
+address=/hq-rtr.au-team.irpo/192.168.1.1
+
+ptr-record=1.1.168.192.in-addr.arpa,hq-rtr.au-team.irpo
+
+cname=moodle.au-team.irpo,hq-rtr.au-team.irpo
+
+cname=wiki.au-team.irpo,hq-rtr.au-team.irpo
+
+
+address=/br-rtr.au-team.irpo/192.168.4.1
+
+
+address=/hq-srv.au-team.irpo/192.168.1.2
+
+ptr-record=2.1.168.192.in-addr.arpa,hq-srv.au-team.irpo
+
+
+address=/hq-cli.au-team.irpo/192.168.2.2 (Смотрите адрес на HQ-CLI, т.к он выдаётся по DHCP)
+
+ptr-record=2.2.168.192.in-addr.arpa,hq-cli.au-team.irpo
+
+
+address=/br-srv.au-team.irpo/192.168.4.2
+```
+<img src="unnamed (2).png" width="500">
+```
+Сохраняем файл нажатием кнопки F2, а затем выход с помощью F10.
+
+Теперь необходимо добавить строку 192.168.1.1 hq-rtr.au-team.irpo в файл /etc/hosts:
+```
+mcedit /etc/hosts
+```
+<img src="unnamed (3).png" width="500">
+```
+Сохраняем файл, выходим из редактора.Перезапускаем службу командой:
+
+```
+systemctl restart dnsmasq
+```
+Проверим пинг сначала с HQ-SRV на google.com и hq-rtr.au-team.irpo:
+```
+ping google.com
+
+ping hq-rtr.au-team.irpo
+```
+Теперь проверим пинг с HQ-CLI:
+```
+ping google.com
+
+ping hq-rtr.au-team.irpo
+```
+И проверим работу CNAME записей с HQ-CLI:
+```
+dig moodle.au-team.irpo
+dig wiki.au-team.irpo
+```
 ### 8 Настройка часового пояса
 #### HQ-SRV, HQ-CLI, BR-SRV
 ```
