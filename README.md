@@ -450,16 +450,24 @@ do sh ip route
 ### 6 Настройка DHCP
 #### HQ-RTR
 ```
-ip pool HQ-NET200 192.168.0.66-192.168.0.70
+ip pool hq 192.168.1.67-192.168.1.78
 !
 dhcp-server 1
- lease 86400
- mask 255.255.255.0
- pool HQ-NET200 1
-  dns 192.168.0.2
-  domain-name au-team.irpo
-  gateway 192.168.0.65
+static ip 192.168.1.66
+ mask 255.255.255.240
+gateway 192.168.1.65
+dns 192.168.1.3
+domain-name au-team.irpo
+ pool hq 1
+  dns 192.168.1.3
+  domain-search au-team.irpo
+  gateway 192.168.1.65
   mask 255.255.255.240
+ex
+ex
+int 200
+dhcp-server 1
+do wr
 !
 interface HQ-CLI
  dhcp-server 1
