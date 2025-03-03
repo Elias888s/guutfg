@@ -605,6 +605,7 @@ nano /etc/sudoers.d/sshuser
 
 ```
 sshuser ALL=(ALL) NOPASSWD:ALL
+usermod -aG wheel sshuser
 ```
 
 ### Проверка:
