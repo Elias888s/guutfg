@@ -590,26 +590,147 @@ ping hq-rtr.au-team.irpo
 dig moodle.au-team.irpo
 dig wiki.au-team.irpo
 ```
-### 8 Настройка часового пояса
-#### HQ-SRV, HQ-CLI, BR-SRV
+# Создание локальных учетных записей
+
+## HQ-SRV и BR-SRV
+
+```
+useradd -m -u 1010 sshuser
+passwd sshuser
 ```
 
+```
+nano /etc/sudoers.d/sshuser
+```
+
+```
+sshuser ALL=(ALL) NOPASSWD:ALL
+```
+
+### Проверка:
+
+```
+su - sshuser
+sudo whoami
+```
+
+## HQ-RTR (EcoRouter)
+
+```
+conf t
+username net_admin
+password P@ssw0rd
+role admin
+activate
+```
+
+## BR-RTR (Eltex - vESR)
+
+```
+configure
+username net_admin
+password P@ssw0rd
+privilege 15
+end
+!
+commit
+confirm
+!
+```
+# Настройка SSH на HQ-SRV и BR-SRV
+
+Делаем на всякий случай бэкап конфига:
+
+```
+cd /etc/openssh
+cp -a sshd_config sshd_config.bak
+```
+
+Редактируем файл конфигурации SSH сервера
+
+```
+nano sshd_config
+```
+
+Изменяем следующие параметры. Не забываем их раскоментировать. Если какой-то параметр не находиться, то просто добавьте его сами
+
+```
+Port 2024
+MaxAuthTries 3
+Banner /etc/openssh/banner
+AllowUsers sshuser
+```
+
+Создаем файл с баннером
+
+```
+nano /etc/openssh/banner
+```
+
+Вставляем в него следующие содержимое
+
+```
+******************************************************
+*                     WARNING!                       *
+*                                                    *
+*           Access only authorized users!            *
+*                                                    *
+*  If you not authorized user, close this session!   *
+*                                                    *
+******************************************************
+```
+
+Перезагружаем `SSH`
+
+```
+systemctl restart sshd
+```
+
+## Проверка
+
+<img src="01.png" width='600'>
+# Настройка часового пояса
+
+## HQ-SRV, HQ-CLI, BR-SRV
+
 Проверяем какой часовой пояс установлен
+
 ```
 timedatectl status
 ```
-Если time-zone не Asia/Yekaterinburg, то устанавливаем его
+
+<img src="01.png" width='600'>
+
+Если отличается, то устанавливаем
+
 ```
 timedatectl set-timezone Asia/Yekaterinburg
 ```
-#### HQ-RTR, BR-RTR
+
+## HQ-RTR (EcoRouter)
+
 ```
 conf t
 ntp timezone utc+5
-do wr
 ```
 Проверяем:
 
 ```
-do show ntp timezone
+show ntp timezone
+```
+
+## BR-RTR (Eltex)
+
+```
+configure
+clock timezone gmt +5
+end
+commit
+confirm
+```
+
+Проверяем:
+
+```
+show date
 ```
