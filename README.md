@@ -234,11 +234,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.0.2/26 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.1.2/26 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.0.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.1.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
