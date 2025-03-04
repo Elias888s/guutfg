@@ -118,7 +118,7 @@ no boot a-image stable
 ```
 Создание интерфейса и назначение ему IP
 ```
-int TO-ISP
+int isp
 ip address 172.16.4.14/28
 no shutdown
 ex
@@ -194,7 +194,7 @@ router ospf 1
 network 172.16.0.1/30 area 0
 network 192.168.1.0/26 area 0
 passive-interface default
-no passive-interface tunnel0
+no passive-interface tunnel.1
 area 0 authentication
 exit
 write memory
@@ -312,7 +312,7 @@ router ospf 1
 network 172.16.0.2/30 area 0
 network 192.168.2.0/27 area 0
 passive-interface default
-no passive-interface tunnel.0
+no passive-interface tunnel.1
 area 0 authentication
 exit
 write memory
