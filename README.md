@@ -149,16 +149,20 @@ port te1
   encapsulation dot1q 100
   rewrite pop 1
   connect ip interface 100
+ex
  service-instance 200
   encapsulation dot1q 200
   rewrite pop 1
   connect ip interface 200
+ex
 service-instance 999
   encapsulation dot1q 999
   rewrite pop 1
   connect ip interface 999
+ex
+ex
 ip route 0.0.0.0/0 172.16.4.1
-ip name-server
+ip name-server (который в ISP)
 do wr
 ```
 Создание nat
@@ -184,6 +188,7 @@ interface tunnel.1
  ip mtu 1400
  ip address 172.16.0.1/30
  ip tunnel 172.16.4.14 172.16.5.14 mode gre
+ex
 ```
 ospf
 HQ-RTR
@@ -203,8 +208,6 @@ write memory
 ip route 0.0.0.0/0 172.16.4.1
 do wr
 ```
-Проверка:
-<img src="2.jpg" width="500">
 ```
 #### HQ-SRV
 Просмотр интерфейсов
@@ -265,9 +268,11 @@ no boot a-image stable
 int isp
 ip address 172.16.5.14/28
 no shutdown
+ex
 int lan
 ip address 192.168.2.1/27
 no shutdown
+ex
 ```
 Привязка созданных интерфейсов к портам
 ```
@@ -275,6 +280,7 @@ port te0
 service-instance isp
 encapsulation untagged
 connect ip interface isp
+ex
 ex
 port te1
 service-instance lan
