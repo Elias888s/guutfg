@@ -469,6 +469,22 @@ domain-name au-team.irpo
   domain-search au-team.irpo
   gateway 192.168.1.65
   mask 255.255.255.240
+ver2
+ip pool hq 192.168.1.66-192.168.1.70
+!
+dhcp-server 1
+ lease 86400
+ mask 255.255.255.0
+ pool HQ-NET200 1
+  dns 192.168.1.2
+  domain-name au-team.irpo
+  gateway 192.168.1.65
+  mask 255.255.255.240
+!
+interface HQ-CLI
+ dhcp-server 1
+!
+do wr
 ex
 ex
 int 200
