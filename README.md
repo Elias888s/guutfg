@@ -198,6 +198,8 @@ conf t
 router ospf 1
 network 172.16.0.1/30 area 0
 network 192.168.1.0/26 area 0
+network 192.168.1.65/28 area 0
+network 192.168.1.81/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 area 0 authentication
