@@ -144,17 +144,17 @@ ex
 ex
 port te1
  service-instance te1/100
-  encapsulation dot1q 100
+  encapsulation dot1q 100 exact
   rewrite pop 1
   connect ip interface 100
 ex
  service-instance te1/200
-  encapsulation dot1q 200
+  encapsulation dot1q 200 exact
   rewrite pop 1
   connect ip interface 200
 ex
 service-instance te1/999
-  encapsulation dot1q 999
+  encapsulation dot1q 999 exact
   rewrite pop 1
   connect ip interface 999
 ex
