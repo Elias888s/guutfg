@@ -120,9 +120,7 @@ no boot a-image stable
 ```
 int isp
 ip address 172.16.4.14/28
-no shutdown
 ex
-ip name-server "DNS от ISP который в /etc/resolv.conf"
 ```
 Создание интерфейсов для VLAN
 ```
@@ -139,23 +137,23 @@ interface 999
 Создание для каждого VLAN своего service-instance
 ```
 port te0
- service-instance isp
+ service-instance te0/isp
   encapsulation untagged
   connect ip interface isp
 ex
 ex
 port te1
- service-instance 100
+ service-instance te1/100
   encapsulation dot1q 100
   rewrite pop 1
   connect ip interface 100
 ex
- service-instance 200
+ service-instance te1/200
   encapsulation dot1q 200
   rewrite pop 1
   connect ip interface 200
 ex
-service-instance 999
+service-instance te1/999
   encapsulation dot1q 999
   rewrite pop 1
   connect ip interface 999
@@ -269,23 +267,21 @@ no boot a-image stable
 ```
 int isp
 ip address 172.16.5.14/28
-no shutdown
 ex
 int lan
 ip address 192.168.2.1/27
-no shutdown
 ex
 ```
 Привязка созданных интерфейсов к портам
 ```
 port te0
-service-instance isp
+service-instance te0/isp
 encapsulation untagged
 connect ip interface isp
 ex
 ex
 port te1
-service-instance lan
+service-instance te1/lan
 encapsulation untagged
 connect ip interface lan
 ex
