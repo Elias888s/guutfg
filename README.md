@@ -213,9 +213,9 @@ do sh ip ospf 1
 do sh ip ospf interface tunnel.1 - проверка аунтефикации
 Маршрут в сторону ISP
 ```
-ospf
+dhcp
 HQ-RTR
-
+```
 ip route 0.0.0.0/0 172.16.4.1
 do wr
 ip pool hq 192.168.1.66-192.168.1.78
@@ -231,8 +231,6 @@ ex
 int 200
 dhcp-server 1
 do wr
-!
-```
 ```
 #### HQ-SRV
 Просмотр интерфейсов
