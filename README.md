@@ -213,8 +213,25 @@ do sh ip ospf 1
 do sh ip ospf interface tunnel.1 - проверка аунтефикации
 Маршрут в сторону ISP
 ```
+ospf
+HQ-RTR
+
 ip route 0.0.0.0/0 172.16.4.1
 do wr
+ip pool hq 192.168.1.66-192.168.1.78
+!
+dhcp-server 1
+ pool hq 1
+  dns 192.168.1.2
+  domain-name au-team.irpo
+  gateway 192.168.1.65
+  mask 255.255.255.240
+ex
+ex
+int 200
+dhcp-server 1
+do wr
+!
 ```
 ```
 #### HQ-SRV
@@ -436,29 +453,6 @@ AUTHORIZED ACCESS ONLY!!!!
 ```
 systemctl restart sshd
 ```
-### 5 Настраиваем OSPF
-#### HQ-RTR
-```
-router ospf 1
- network 172.16.1.0/30 area 0
- network 192.168.0.0/28 area 0
-!
-interface tunnel.1
- ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 Demo2025
- ip ospf network point-to-point
-do wr
-```
-#### OSPF
-```
-router ospf 1
- network 172.16.1.0/30 area 0
- network 192.168.1.0/27 area 0
-!
-interface tunnel.1
- ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 P@ssw0rd
-do wr
 ```
 Проверка:
 ```
@@ -466,38 +460,6 @@ do sh ip ospf neighbor
 do sh ip ospf interface brief
 do sh ip route
 ```
-### 6 Настройка DHCP
-#### HQ-RTR
-```
-ip pool hq 192.168.1.67-192.168.1.78
-!
-dhcp-server 1
-static ip 192.168.1.66
- mask 255.255.255.240
-gateway 192.168.1.65
-dns 192.168.1.3
-domain-name au-team.irpo
- pool hq 1
-  dns 192.168.1.3
-  domain-search au-team.irpo
-  gateway 192.168.1.65
-  mask 255.255.255.240
-ver2 - он вроде лучше
-ip pool hq 192.168.1.66-192.168.1.78
-!
-dhcp-server 1
- pool hq 1
-  dns 192.168.1.2
-  domain-name au-team.irpo
-  gateway 192.168.1.65
-  mask 255.255.255.240
-ex
-ex
-int 200
-dhcp-server 1
-do wr
-!
-do wr
 ```
 #### HQ-CLI
 <img src="5.png" width="500">
