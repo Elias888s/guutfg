@@ -194,15 +194,23 @@ HQ-RTR
 en
 conf t
 router ospf 1
-network 172.16.0.1/30 area 0
+network 172.16.0.0/30 area 0
 network 192.168.1.0/26 area 0
-network 192.168.1.65/28 area 0
-network 192.168.1.81/29 area 0
+network 192.168.1.64/28 area 0
+network 192.168.1.80/29 area 0
 passive-interface default
 no passive-interface tunnel.1
-area 0 authentication
 exit
+interface tunnel.1
+ip ospf authentication message-digest
+ip ospf message-digest-key 1 md5 P@ssw0rd
+ex
 write memory
+проверка
+do sh ip ospf neighbor
+do sh ip route ospf
+do sh ip ospf 1
+do sh ip ospf interface tunnel.1 - проверка аунтефикации
 Маршрут в сторону ISP
 ```
 ip route 0.0.0.0/0 172.16.4.1
@@ -313,13 +321,21 @@ interface tunnel.1
 en
 conf t
 router ospf 1
-network 172.16.0.2/30 area 0
+network 172.16.0.0/30 area 0
 network 192.168.2.0/27 area 0
 passive-interface default
 no passive-interface tunnel.1
-area 0 authentication
 exit
+interface tunnel.1
+ip ospf authentication message-digest
+ip ospf message-digest-key 1 md5 P@ssw0rd
+ex
 write memory
+проверка
+do sh ip ospf neighbor
+do sh ip route ospf
+do sh ip ospf 1
+do sh ip ospf interface tunnel.1 - проверка аунтефикации
 ```
 Маршрут в сторону ISP
 ```
@@ -441,8 +457,7 @@ router ospf 1
 !
 interface tunnel.1
  ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 Demo2025
- ip ospf network point-to-point
+ ip ospf message-digest-key 1 md5 P@ssw0rd
 do wr
 ```
 Проверка:
