@@ -194,6 +194,7 @@ HQ-RTR
 en
 conf t
 router ospf 1
+ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
 network 192.168.1.0/26 area 0
 network 192.168.1.64/28 area 0
@@ -336,6 +337,7 @@ interface tunnel.1
 en
 conf t
 router ospf 1
+ospf router-id 172.16.0.2
 network 172.16.0.0/30 area 0
 network 192.168.2.0/27 area 0
 passive-interface default
