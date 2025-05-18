@@ -774,6 +774,7 @@ ansible_network_os: ios
 Networking.yml
 
 ```
+```
 Выполняем команду для ping`а всех машин:
 
 ```
