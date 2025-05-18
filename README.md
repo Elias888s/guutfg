@@ -744,7 +744,8 @@ host_key_checking = False
 Далее заполняем инвентарный файл /etc/ansible/inventory.yml:
 
 ```
-<img src="image.png" width='600'>
+
+<img src="image.png" width='500'>
 
 ```
 Создаем файлы с переменными для всех категорий и для категории Networking:
