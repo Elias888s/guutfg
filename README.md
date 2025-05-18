@@ -748,6 +748,7 @@ host_key_checking = False
 <img src="14.png" width="500">
 
 ```
+```
 Создаем файлы с переменными для всех категорий и для категории Networking:
 
 ```
