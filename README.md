@@ -779,4 +779,10 @@ Networking.yml
 
 ```
 ansible -m ping all
+
+```
+hq-rtr и br-rtr
+
+```
+security none
 ```
