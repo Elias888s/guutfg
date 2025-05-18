@@ -722,3 +722,59 @@ confirm
 ```
 show date
 ```
+# Сконфигурируйте ansible на сервере BR-SRV
+
+Делаем на всякий случай бэкап конфига:
+
+```
+apt-get update
+
+apt-get install ansible
+
+apt-get install -y ansible sshpass
+
+
+```
+Редактируем указанные строки в конфигурационном файле /etc/ansible/ansible.cfg:
+```
+inventory = ./inventory.yml
+host_key_checking = False
+
+```
+Далее заполняем инвентарный файл /etc/ansible/inventory.yml:
+
+```
+<img src="image.png" width='600'>
+
+```
+Создаем файлы с переменными для всех категорий и для категории Networking:
+
+```
+cd /etc/ansible
+mkdir group_vars
+touch group_vars/{all.yml,Networking.yml}
+
+```
+Редактируем их:
+```
+ansible_ssh_user: sshuser
+ansible_ssh_pass: P@ssw0rd
+ansible_python_interpreter: /usr/bin/python3
+
+```
+all.yml
+
+```
+ansible_connection: network_cli
+ansible_network_os: ios
+
+```
+Networking.yml
+
+
+```
+Выполняем команду для ping`а всех машин:
+
+```
+ansible -m ping all
+```
