@@ -745,7 +745,7 @@ host_key_checking = False
 
 ```
 
-<img src="image.png" width='500'>
+<img src="image.png" width="500">
 
 ```
 Создаем файлы с переменными для всех категорий и для категории Networking:
@@ -771,7 +771,6 @@ ansible_network_os: ios
 
 ```
 Networking.yml
-
 
 ```
 Выполняем команду для ping`а всех машин:
