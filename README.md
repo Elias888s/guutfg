@@ -408,8 +408,10 @@ do ping 'DNS от ISP'
 ```
 useradd -m -u 1010 sshuser
 passwd sshuser
-nano /etc/sudoers.d/sshuser
+usermod -aG wheel sshuser
+echo "sshuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 sshuser ALL=(ALL) NOPASSWD:ALL
+sudo -i
 ```
 Проверка
 ```
