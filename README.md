@@ -689,6 +689,7 @@ systemctl restart sshd
 ```
 timedatectl status
 ```
+<img src="zyltrc.png" width="500">
 
 <img src="01.png" width='600'>
 
@@ -747,7 +748,7 @@ host_key_checking = False
 Далее заполняем инвентарный файл /etc/ansible/inventory.yml:
 ```
 ```
-<img src="zyltrc.png" width="500">
+
 <img src="14.png" width="500">
 
 ```
