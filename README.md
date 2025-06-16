@@ -499,6 +499,7 @@ systemctl enable --now dnsmasq (Добавление службы в автоз�
 
 ```
 <img src="unnamed.png" width="500">
+<img src="LVPyDdXjETE.jpg" width="500">
 ```
 Проверим её состояние перед работой:
 
