@@ -48,8 +48,8 @@ cp /etc/net/ifaces/ens34/options /etc/net/ifaces/ens**
 ```
 Выдача IP
 ```
-echo 172.16.4.1/28 > /etc/net/ifaces/ens**/ipv4address
-echo 172.16.5.1/28 > /etc/net/ifaces/ens**/ipv4address
+echo 172.16.40.1/28 > /etc/net/ifaces/ens**/ipv4address
+echo 172.16.50.1/28 > /etc/net/ifaces/ens**/ipv4address
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
@@ -119,19 +119,19 @@ no boot a-image stable
 Создание интерфейса и назначение ему IP
 ```
 int isp
-ip address 172.16.4.14/28
+ip address 172.16.40.14/28
 ex
 ```
 Создание интерфейсов для VLAN
 ```
-interface 100
- ip address 192.168.1.1/26
+interface 15
+ ip address 192.168.1.1/27
 !
-interface 200
- ip address 192.168.1.65/28
+interface 25
+ ip address 192.168.1.33/27
 !
-interface 999
- ip address 192.168.1.81/29
+interface 99
+ ip address 192.168.1.65/29
 !
 ```
 Создание для каждого VLAN своего service-instance
@@ -143,40 +143,40 @@ port te0
 ex
 ex
 port te1
- service-instance te1/100
-  encapsulation dot1q 100 exact
+ service-instance te1/15
+  encapsulation dot1q 15 exact
   rewrite pop 1
-  connect ip interface 100
+  connect ip interface 15
 ex
- service-instance te1/200
-  encapsulation dot1q 200 exact
+ service-instance te1/25
+  encapsulation dot1q 25 exact
   rewrite pop 1
-  connect ip interface 200
+  connect ip interface 25
 ex
-service-instance te1/999
-  encapsulation dot1q 999 exact
+service-instance te1/99
+  encapsulation dot1q 99 exact
   rewrite pop 1
-  connect ip interface 999
+  connect ip interface 99
 ex
 ex
-ip route 0.0.0.0/0 172.16.4.1
+ip route 0.0.0.0/0 172.16.40.1
 ip name-server (который в ISP)
 do wr
 ```
 Создание nat
 ```
 ip nat pool INTERNET 192.168.1.1-192.168.1.78
-ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.4.14
+ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.40.14
 int isp
 ip nat outside
 ex
-int 100
+int 15
 ip nat instide
 ex
-int 200
+int 25
 ip nat instide
 ex
-int 999
+int 99
 ip nat instide
 ex
 ```
@@ -185,7 +185,7 @@ ex
 interface tunnel.1
  ip mtu 1400
  ip address 172.16.0.1/30
- ip tunnel 172.16.4.14 172.16.5.14 mode gre
+ ip tunnel 172.16.40.14 172.16.50.14 mode gre
 ex
 ```
 ospf
@@ -196,9 +196,9 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
-network 192.168.1.0/26 area 0
-network 192.168.1.64/28 area 0
-network 192.168.1.80/29 area 0
+network 192.168.1.0/27 area 0
+network 192.168.1.32/27 area 0
+network 192.168.1.64/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -217,19 +217,19 @@ do sh ip ospf interface tunnel.1 - проверка аунтефикации
 dhcp
 HQ-RTR
 ```
-ip route 0.0.0.0/0 172.16.4.1
+ip route 0.0.0.0/0 172.16.40.1
 do wr
-ip pool hq 192.168.1.66-192.168.1.78
+ip pool hq 192.168.1.34-192.168.1.62
 !
 dhcp-server 1
  pool hq 1
   dns 192.168.1.2
   domain-name au-team.irpo
-  gateway 192.168.1.65
-  mask 255.255.255.240
+  gateway 192.168.1.33
+  mask 255.255.255.224
 ex
 ex
-int 200
+int 25
 dhcp-server 1
 do wr
 ```
@@ -258,7 +258,7 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.1.2/26 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.1.2/27 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
@@ -290,10 +290,10 @@ no boot a-image stable
 Создание интерфейса и назначение ему IP
 ```
 int isp
-ip address 172.16.5.14/28
+ip address 172.16.50.14/28
 ex
 int lan
-ip address 192.168.2.1/27
+ip address 192.168.2.1/28
 ex
 ```
 Привязка созданных интерфейсов к портам
@@ -310,14 +310,14 @@ encapsulation untagged
 connect ip interface lan
 ex
 ex
-ip route 0.0.0.0/0 172.16.5.1
+ip route 0.0.0.0/0 172.16.50.1
 ip nameserver
 
 ```
 Создание nat
 ```
 ip nat pool INTERNET 192.168.2.1-192.168.2.30
-ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.5.14
+ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.50.14
 int isp
 ip nat outside
 ex
@@ -330,7 +330,7 @@ ex
 interface tunnel.1
  ip mtu 1400
  ip address 172.16.0.2/30
- ip tunnel 172.16.5.14 172.16.4.14 mode gre
+ ip tunnel 172.16.50.14 172.16.40.14 mode gre
  ```
  BR-RTR OSPF
 ```
@@ -339,7 +339,7 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.2
 network 172.16.0.0/30 area 0
-network 192.168.2.0/27 area 0
+network 192.168.2.0/28 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -356,7 +356,7 @@ do sh ip ospf interface tunnel.1 - проверка аунтефикации
 ```
 Маршрут в сторону ISP
 ```
-ip route 0.0.0.0/0 172.16.5.1
+ip route 0.0.0.0/0 172.16.50.1
 do wr
 ```
 #### BR-SRV
@@ -384,11 +384,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.1.2/27 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.2.2/28 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.1.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.2.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
@@ -437,8 +437,8 @@ vim /etc/openssh/sshd_config
 ```
 Изменяем следующие параметры, раскомменчиваем, если параметр не находится то добавляем
 ```
-Port 2024
-MaxAuthTries 3
+Port 3010
+MaxAuthTries 2
 Banner /etc/openssh/banner
 AllowUsers sshuser
 ```
@@ -533,7 +533,7 @@ cname=moodle.au-team.irpo,hq-rtr.au-team.irpo
 cname=wiki.au-team.irpo,hq-rtr.au-team.irpo
 
 
-address=/br-rtr.au-team.irpo/192.168.4.1
+address=/br-rtr.au-team.irpo/192.168.2.1
 
 
 address=/hq-srv.au-team.irpo/192.168.1.2
@@ -541,12 +541,12 @@ address=/hq-srv.au-team.irpo/192.168.1.2
 ptr-record=2.1.168.192.in-addr.arpa,hq-srv.au-team.irpo
 
 
-address=/hq-cli.au-team.irpo/192.168.2.2 (Смотрите адрес на HQ-CLI, т.к он выдаётся по DHCP)
+address=/hq-cli.au-team.irpo/192.168.1.34 (Смотрите адрес на HQ-CLI, т.к он выдаётся по DHCP)
 
 ptr-record=2.2.168.192.in-addr.arpa,hq-cli.au-team.irpo
 
 
-address=/br-srv.au-team.irpo/192.168.4.2
+address=/br-srv.au-team.irpo/192.168.2.2
 ```
 <img src="unnamed (2).png" width="500">
 ```
@@ -646,8 +646,8 @@ nano sshd_config
 Изменяем следующие параметры. Не забываем их раскоментировать. Если какой-то параметр не находиться, то просто добавьте его сами
 
 ```
-Port 2024
-MaxAuthTries 3
+Port 3010
+MaxAuthTries 2
 Banner /etc/openssh/banner
 AllowUsers sshuser
 ```
