@@ -143,18 +143,18 @@ port te0
 ex
 ex
 port te1
- service-instance te1/vlan100
-  encapsulation dot1q 100
+ service-instance te1/vlan15
+  encapsulation dot1q 15
   rewrite pop 1
   connect ip interface HQ-SRV
 ex
- service-instance te1/vlan200
-  encapsulation dot1q 200
+ service-instance te1/vlan25
+  encapsulation dot1q 25
   rewrite pop 1
   connect ip interface HQ-CLI
 ex
-service-instance te1/vlan999
-  encapsulation dot1q 999
+service-instance te1/vlan99
+  encapsulation dot1q 99
   rewrite pop 1
   connect ip interface HQ-MGMT
 ex
@@ -165,7 +165,7 @@ do wr
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.100.1-192.168.100.34,192.168.200.1-192.168.200.34
+ip nat pool INTERNET 192.168.100.1-192.168.100.30,192.168.200.1-192.168.200.30
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.40.14
 int isp
 ip nat outside
@@ -197,8 +197,8 @@ router ospf 1
 ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
 network 192.168.100.0/27 area 0
-network 192.168.200.32/27 area 0
-network 192.168.224.48/29 area 0
+network 192.168.200.0/27 area 0
+network 192.168.224.0/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -227,7 +227,7 @@ dhcp-server 1
   mask 255.255.255.224 или так mask 27
 ex
 ex
-int 25
+int HQ-CLI
 dhcp-server 1
 do wr
 ```
