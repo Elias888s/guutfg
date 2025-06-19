@@ -10,13 +10,13 @@
 | HQ-RTR         | ge0       | 172.16.40.2  | /28 (255.255.255.240) | 172.16.40.1  |      
 |                | ge1.15   | 192.168.100.1 | /27 (255.255.255.224) |—|      
 |                | ge1.25   | 192.168.200.1| /27 (255.255.255.224) |—|      
-|                | ge1.99   | 192.168.300.1| /29 (255.255.255.248) |—|
+|                | ge1.99   | 192.168.220.1| /29 (255.255.255.248) |—|
 |                | tunnel.1  | 172.16.0.1  | 	/30 (255.255.255.252) |—|      
 | BR-RTR         | ge0       | 172.16.50.2  | /28 (255.255.255.240) | 172.16.50.1  |      
 |                | te0       | 192.168.0.1 | /28 (255.255.255.240) |—|
 |                | tunnel.1  | 172.16.0.2  | /30 (255.255.255.252) |—|
-| HQ-SRV         | ens33     | 192.168.15.2 | /27 (255.255.255.224) | 192.168.15.1 |      
-| HQ-CLI         | ens192    | DHCP        | /27 (255.255.255.224) | 192.168.25.1|      
+| HQ-SRV         | ens33     | 192.168.100.2 | /27 (255.255.255.224) | 192.168.100.1 |      
+| HQ-CLI         | ens192    | DHCP        | /27 (255.255.255.224) | 192.168.200.1|      
 | BR-SRV         | ens192    | 192.168.0.2 | /28 (255.255.255.240) | 192.168.0.1 |
 ### Выдача имени устройству:
 ```
@@ -124,14 +124,14 @@ ex
 ```
 Создание интерфейсов для VLAN
 ```
-interface 15
- ip address 192.168.1.1/27
+interface HQ-SRV
+ ip address 192.168.100.1/27
 !
-interface 25
- ip address 192.168.0.33/28
+interface HQ-CLI
+ ip address 192.168.200.1/27
 !
-interface 99
- ip address 192.168.0.49/29
+interface HQ-MGMT
+ ip address 192.168.220.1/29
 !
 ```
 Создание для каждого VLAN своего service-instance
@@ -143,20 +143,20 @@ port te0
 ex
 ex
 port te1
- service-instance te1/15
-  encapsulation dot1q 15 exact
+ service-instance te1/vlan100
+  encapsulation dot1q 100
   rewrite pop 1
-  connect ip interface 15
+  connect ip interface HQ-SRV
 ex
- service-instance te1/25
-  encapsulation dot1q 25 exact
+ service-instance te1/vlan200
+  encapsulation dot1q 200
   rewrite pop 1
-  connect ip interface 25
+  connect ip interface HQ-CLI
 ex
-service-instance te1/99
-  encapsulation dot1q 99 exact
+service-instance te1/vlan999
+  encapsulation dot1q 999
   rewrite pop 1
-  connect ip interface 99
+  connect ip interface HQ-MGMT
 ex
 ex
 ip route 0.0.0.0/0 172.16.40.1
@@ -165,18 +165,18 @@ do wr
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.1.1-192.168.1.65
+ip nat pool INTERNET 192.168.100.1-192.168.100.34,192.168.200.1-192.168.200.34
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.40.14
 int isp
 ip nat outside
 ex
-int 15
+int HQ-SRV
 ip nat instide
 ex
-int 25
+int HQ-CLI
 ip nat instide
 ex
-int 99
+int HQ-MGMT
 ip nat instide
 ex
 ```
@@ -196,9 +196,9 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
-network 192.168.1.0/27 area 0
-network 192.168.1.32/27 area 0
-network 192.168.1.48/29 area 0
+network 192.168.100.0/27 area 0
+network 192.168.200.32/27 area 0
+network 192.168.224.48/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
