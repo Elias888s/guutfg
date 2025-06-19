@@ -125,13 +125,13 @@ ex
 Создание интерфейсов для VLAN
 ```
 interface 15
- ip address 192.168.100.1/27
+ ip address 192.168.1.1/27
 !
 interface 25
- ip address 192.168.200.1/27
+ ip address 192.168.0.33/28
 !
 interface 99
- ip address 192.168.300.1/29
+ ip address 192.168.0.49/29
 !
 ```
 Создание для каждого VLAN своего service-instance
@@ -165,7 +165,7 @@ do wr
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.100.1-192.168.100.30,192.168.200.1-192.168.200.30
+ip nat pool INTERNET 192.168.1.1-192.168.1.65
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.40.14
 int isp
 ip nat outside
@@ -196,9 +196,9 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
-network 192.168.100.0/27 area 0
-network 192.168.200.0/27 area 0
-network 192.168.300.0/29 area 0
+network 192.168.1.0/27 area 0
+network 192.168.1.32/27 area 0
+network 192.168.1.48/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -217,14 +217,14 @@ do sh ip ospf interface tunnel.1 - проверка аунтефикации
 dhcp
 HQ-RTR
 ```
-ip pool hq 192.168.200.2-192.168.200.30
+ip pool hq 192.168.1.34-192.168.1.34
 !
 dhcp-server 1
  pool hq 1
-  dns 192.168.100.2
+  dns 192.168.1.2
   domain-name au-team.irpo
-  gateway 192.168.200.1
-  mask 255.255.255.224 или так mask 27
+  gateway 192.168.1.33
+  mask 255.255.255.240 или так mask 28
 ex
 ex
 int 25
@@ -256,11 +256,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.100.2/27 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.1.2/27 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.100.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.1.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
@@ -291,7 +291,7 @@ int isp
 ip address 172.16.50.14/28
 ex
 int lan
-ip address 192.168.0.1/28
+ip address 192.168.2.1/28
 ex
 ```
 Привязка созданных интерфейсов к портам
@@ -314,7 +314,7 @@ ip nameserver
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.0.1-192.168.0.30
+ip nat pool INTERNET 192.168.2.1-192.168.2.30
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.50.14
 int isp
 ip nat outside
@@ -327,7 +327,7 @@ ex
 ```
 interface tunnel.1
  ip mtu 1400
- ip address 172.16.0.2/30
+ ip address 172.16.2.2/30
  ip tunnel 172.16.50.14 172.16.40.14 mode gre
  ```
  BR-RTR OSPF
@@ -337,7 +337,7 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.2
 network 172.16.0.0/30 area 0
-network 192.168.0.0/28 area 0
+network 192.168.2.0/28 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -382,11 +382,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.0.2/28 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.2.2/28 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.0.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.2.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
