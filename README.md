@@ -11,10 +11,10 @@
 |                | ge1.15   | 192.168.15.1 | /27 (255.255.255.224) |—|      
 |                | ge1.25   | 192.168.25.1| /27 (255.255.255.224) |—|      
 |                | ge1.99   | 192.168.99.1| /29 (255.255.255.248) |—|
-|                | tunnel.1  | 172.16.1.1  | 	/30 (255.255.255.252) |—|      
+|                | tunnel.1  | 172.16.0.1  | 	/30 (255.255.255.252) |—|      
 | BR-RTR         | ge0       | 172.16.50.2  | /28 (255.255.255.240) | 172.16.50.1  |      
 |                | te0       | 192.168.0.1 | /28 (255.255.255.240) |—|
-|                | tunnel.1  | 172.16.1.2  | /30 (255.255.255.252) |—|
+|                | tunnel.1  | 172.16.0.2  | /30 (255.255.255.252) |—|
 | HQ-SRV         | ens33     | 192.168.15.2 | /27 (255.255.255.224) | 192.168.15.1 |      
 | HQ-CLI         | ens192    | DHCP        | /27 (255.255.255.224) | 192.168.25.1|      
 | BR-SRV         | ens192    | 192.168.0.2 | /28 (255.255.255.240) | 192.168.0.1 |
@@ -125,13 +125,13 @@ ex
 Создание интерфейсов для VLAN
 ```
 interface 15
- ip address 192.168.1.1/27
+ ip address 192.168.15.1/27
 !
 interface 25
- ip address 192.168.1.33/27
+ ip address 192.168.25.1/27
 !
 interface 99
- ip address 192.168.1.65/29
+ ip address 	192.168.99.1/29
 !
 ```
 Создание для каждого VLAN своего service-instance
@@ -165,7 +165,7 @@ do wr
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.1.1-192.168.1.78
+ip nat pool INTERNET 192.168.15.1-192.168.15.30,192.168.25.1-192.168.25.30
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.40.14
 int isp
 ip nat outside
@@ -196,9 +196,9 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.1
 network 172.16.0.0/30 area 0
-network 192.168.1.0/27 area 0
-network 192.168.1.32/27 area 0
-network 192.168.1.64/29 area 0
+network 192.168.15.0/27 area 0
+network 192.168.25.0/27 area 0
+network 192.168.99.0/29 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -217,15 +217,13 @@ do sh ip ospf interface tunnel.1 - проверка аунтефикации
 dhcp
 HQ-RTR
 ```
-ip route 0.0.0.0/0 172.16.40.1
-do wr
-ip pool hq 192.168.1.34-192.168.1.62
+ip pool hq 192.168.25.2-192.168.25.30
 !
 dhcp-server 1
  pool hq 1
   dns 192.168.1.2
   domain-name au-team.irpo
-  gateway 192.168.1.33
+  gateway 192.168.25.1
   mask 255.255.255.224
 ex
 ex
@@ -258,11 +256,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.1.2/27 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.15.2/27 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.1.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.15.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
@@ -293,7 +291,7 @@ int isp
 ip address 172.16.50.14/28
 ex
 int lan
-ip address 192.168.2.1/28
+ip address 192.168.0.1/28
 ex
 ```
 Привязка созданных интерфейсов к портам
@@ -316,7 +314,7 @@ ip nameserver
 ```
 Создание nat
 ```
-ip nat pool INTERNET 192.168.2.1-192.168.2.30
+ip nat pool INTERNET 192.168.0.1-192.168.0.30
 ip nat source dynamic inside-to-outside pool INTERNET overload 172.16.50.14
 int isp
 ip nat outside
@@ -339,7 +337,7 @@ conf t
 router ospf 1
 ospf router-id 172.16.0.2
 network 172.16.0.0/30 area 0
-network 192.168.2.0/28 area 0
+network 192.168.0.0/28 area 0
 passive-interface default
 no passive-interface tunnel.1
 exit
@@ -384,11 +382,11 @@ nameserver "DNS от ISP который в /etc/resolv.conf"
 ```
 Выдача IP
 ```
-echo 192.168.2.2/28 > /etc/net/ifaces/ens**/ipv4address
+echo 192.168.0.2/28 > /etc/net/ifaces/ens**/ipv4address
 ```
 Выдача шлюза
 ```
-echo default via 192.168.2.1 > /etc/net/ifaces/ens**/ipv4route
+echo default via 192.168.0.1 > /etc/net/ifaces/ens**/ipv4route
 ```
 включение forwarding, в строке net.ipv4.ip_forward поменять 0 на 1
 ```
