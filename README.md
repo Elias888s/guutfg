@@ -217,14 +217,14 @@ do sh ip ospf interface tunnel.1 - проверка аунтефикации
 dhcp
 HQ-RTR
 ```
-ip pool hq 192.168.1.34-192.168.1.34
+ip pool hq 192.168.200.2-192.168.200.2
 !
 dhcp-server 1
  pool hq 1
-  dns 192.168.1.2
+  dns 192.168.100.2
   domain-name au-team.irpo
-  gateway 192.168.1.33
-  mask 255.255.255.240 или так mask 28
+  gateway 192.168.200.1
+  mask 255.255.255.224 или так mask 27
 ex
 ex
 int 25
