@@ -224,7 +224,7 @@ dhcp-server 1
   dns 192.168.1.2
   domain-name au-team.irpo
   gateway 192.168.25.1
-  mask 255.255.255.224
+  mask 255.255.255.224 или так mask 27
 ex
 ex
 int 25
